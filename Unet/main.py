@@ -18,10 +18,13 @@ list_file_local = lib.get_file_in_folder(path_zone1_local)
 
 list_OSM_file_France = lib.select_file_name(list_file_local, 'OSM')
 list_optique_file_France = lib.select_file_name(list_file_local, 'S2')
+list_SAR_file_France = lib.select_file_name(list_file_local, 'S1moy')
+
+list_OSM_file_France, list_optique_file_France = lib.del_not_pair(list_OSM_file_France, list_optique_file_France)
 
 ################ 2. Création de la BDD ####################
 
-noir = [0, 0, 0]
+#noir = [0, 0, 0]
 bleu = [52, 152, 219]
 vert_c = [181, 230, 29]
 vert_f = [46, 204, 113]
@@ -29,14 +32,14 @@ rouge = [231, 76, 60]
 blanc = [236, 240, 241]
 orange = [241, 196, 15]
 
-L_ref = [noir, bleu, vert_c, vert_f, rouge, blanc, orange]
+L_ref = [bleu, vert_c, vert_f, rouge, blanc, orange]
 
 #Define the data splits.
 nb_train_data = 0.6
-nb_val_data = 0.3
+nb_val_data = 0.2
 nb_test_data = 0.2
 
-percent = 0.05
+percent = 0.1
 
 img_folder = {}
 img_folder["train"] = []
@@ -90,14 +93,14 @@ Net = Unet.Unet()
 loss_function = torch.nn.CrossEntropyLoss(ignore_index = 0)
 
 # Optimizers
-Optimizer = torch.optim.Adam(Net.parameters(), lr=0.001)
+Optimizer = torch.optim.Adam(Net.parameters(), lr=0.01)
 # start_epoch = 3
 # Generator_weight_path = "C:/Users/natsl/Documents/These/result/" + 'Generator_P2P_Unet_' + str(start_epoch) + "_epochs.pth"
 # Discriminator_weight_path = "C:/Users/natsl/Documents/These/result/" + 'Discriminator_P2P_PatchGAN_' + str(start_epoch) + "_epochs.pth"
 # Generator.load_state_dict(torch.load(Generator_weight_path))
 # Discriminator.load_state_dict(torch.load(Discriminator_weight_path))
 
-number_epochs = 3
+number_epochs = 20
 
 train.train_Unet(number_epochs, Net, train_loader, 
               validate_loader, batch_size, Optimizer,

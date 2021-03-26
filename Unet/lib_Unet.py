@@ -9,6 +9,7 @@ import os
 import gdal
 import numpy as np
 from skimage import io
+import re
 
 from torch.utils.data import Dataset
 import torchvision.transforms as T
@@ -143,6 +144,34 @@ def map_to1(seg_map):
             
             
     return map_fin
+
+def tile_number(file_OSM, file_S2):
+    OSM = []
+    S2 = []
+    for i in range(len(file_OSM)):
+        OSM.append([x for x in re.findall(r'\d+', file_OSM[i])[-2:]])
+    for i in range(len(file_S2)):
+        S2.append([x for x in re.findall(r'\d+', file_S2[i])[-2:]])
+    return OSM, S2
+
+def del_not_pair(file_OSM, file_S2):
+    OSM, S2 = tile_number(file_OSM, file_S2)
+    not_pair_OSM = [ x for x in OSM if x not in S2]
+    not_pair_S2 = [ x for x in S2 if x not in OSM]
+    
+    if len(not_pair_OSM) != 0:
+        for i in range(len(not_pair_OSM)):
+            del_file = [file for file in file_OSM if re.findall(r'\d+', file)[-2:] == not_pair_OSM[i] ]
+            file_OSM.remove(del_file[0])
+    if len(not_pair_S2) != 0: 
+        for i in range(len(not_pair_S2)):
+            del_file = [file for file in file_S2 if re.findall(r'\d+', file)[-2:] == not_pair_S2[i] ]
+            file_S2.remove(del_file[0])
+    return file_OSM, file_S2
+
+
+
+        
         
     
 
