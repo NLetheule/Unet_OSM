@@ -2,7 +2,7 @@ import torch
 import Hypercolumn as net
 import lib_Unet as lib
 
-Desktop = "Jupyterhub"
+Desktop = "local"
 
 ########## 1. Obtention des path de la BDD d'image OSM et Optique #############
 
