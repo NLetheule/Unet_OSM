@@ -76,7 +76,7 @@ class OutConv(nn.Module):
 ### 5. Architecture Unet
 
 class Unet(nn.Module):
-    def __init__(self, n_channels = 3, n_classes = 1, bilinear = True):
+    def __init__(self, n_channels = 3, n_classes = 2, bilinear = True):
         super(Unet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -92,7 +92,7 @@ class Unet(nn.Module):
         self.up2 = decoder_block(512, 256 // 2)
         self.up3 = decoder_block(256, 128 // 2)
         self.up4 = decoder_block(128, 64)
-        self.outc = OutConv(64, 8)
+        self.outc = OutConv(64, self.n_classes)
         
     def forward(self, x):
         x1 = self.inc(x)
